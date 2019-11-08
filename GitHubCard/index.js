@@ -53,18 +53,22 @@ function createCard(data) {
            create a new component and add it to the DOM as a child of .cards
 */
 
+let cards = document.querySelector(".cards");
+
 myData
-  .then(
-    response => {
-      myCard = createCard(response.data);
-      document.querySelector(".cards").append(myCard);
-    }
-  )
-  .catch(
-    rejection => {
-      console.log(rejection);
-    }
-  );
+  .then(response => {
+    myCard = createCard(response.data);
+    cards.append(myCard);
+    return axios.get(response.data["followers_url"]);
+  })
+  .then(response => {
+    console.log("here");
+    console.log(response);
+    cards.append(...response.data.map(follower => createCard(follower)));
+  })
+  .catch(rejection => {
+    console.log(rejection);
+  });
 
 /* Step 5: Now that you have your own card getting added to the DOM, either 
           follow this link in your browser https://api.github.com/users/<Your github name>/followers 
@@ -76,7 +80,7 @@ myData
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+// THIS STEP COMPLETED ABOVE IN THE PROMISE CHAIN
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
