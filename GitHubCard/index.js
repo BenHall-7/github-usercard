@@ -1,7 +1,11 @@
+const axios = require('axios');
+
 /* Step 1: using axios, send a GET request to the following URL 
            (replacing the palceholder with your Github name):
            https://api.github.com/users/<your name>
 */
+
+let myData = axios.get("https://api.github.com/users/BenHall-7");
 
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
@@ -45,6 +49,37 @@ const followersArray = [];
 </div>
 
 */
+
+function createCard(data) {
+  let card = document.createElement("div");
+  let img = document.createElement("img");
+  let cardInfo = document.createElement("div");
+
+  let name = document.createElement("h3");
+  let username = document.createElement("p");
+  let location = document.createElement("p");
+  let profile = document.createElement("p");
+  let followers = document.createElement("p");
+  let following = document.createElement("p");
+  let bio = document.createElement("p");
+
+  name.classList.add("name");
+  name.textContent = data["name"];
+  username.classList.add("username");
+  username.textContent = data["login"];
+  location.textContent = "Location" + data["location"];
+  let profileLink = document.createElement("a");
+  profileLink.setAttribute("src", data["html_url"]);
+  profileLink.textContent = data["html_url"];
+  profile.append("Profile: ", profileLink);
+  followers.textContent = "Followers: " + data["followers"];
+  following.textContent = "Following: " + data["following"];
+  bio.textContent = "Bio" + data["bio"];
+
+  cardInfo.append(name, username, location, profile, followers, following, bio);
+
+  card.append(img, cardInfo);
+}
 
 /* List of LS Instructors Github username's: 
   tetondan
