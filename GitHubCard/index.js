@@ -20,7 +20,7 @@ function createCard(data) {
 
   card.classList.add("card");
   img.setAttribute("src", data["avatar_url"]);
-  cardInfo.classList.add("card-info");
+  //cardInfo.classList.add("card-info");
 
   let name = document.createElement("h3");
   let username = document.createElement("p");
@@ -31,17 +31,17 @@ function createCard(data) {
   let bio = document.createElement("p");
 
   name.classList.add("name");
-  name.textContent = data["name"];
+  name.textContent = data.name;
   username.classList.add("username");
-  username.textContent = data["login"];
-  location.textContent = "Location: " + data["location"];
+  username.textContent = data.login;
+  location.textContent = "Location: " + data.location;
   let profileLink = document.createElement("a");
-  profileLink.setAttribute("src", data["html_url"]);
-  profileLink.textContent = data["html_url"];
+  profileLink.setAttribute("href", data.html_url);
+  profileLink.textContent = data.html_url;
   profile.append("Profile: ", profileLink);
-  followers.textContent = "Followers: " + data["followers"];
-  following.textContent = "Following: " + data["following"];
-  bio.textContent = "Bio: " + data["bio"];
+  followers.textContent = "Followers: " + data.followers;
+  following.textContent = "Following: " + data.following;
+  bio.textContent = "Bio: " + data.bio;
 
   cardInfo.append(name, username, location, profile, followers, following, bio);
 
@@ -59,12 +59,14 @@ myData
   .then(response => {
     myCard = createCard(response.data);
     cards.append(myCard);
-    return axios.get(response.data["followers_url"]);
+    return axios.get(response.data.followers_url);
   })
   .then(response => {
-    console.log("here");
-    console.log(response);
-    cards.append(...response.data.map(follower => createCard(follower)));
+    Promise
+      .all(response.data.map(follower => axios.get(follower.url)))
+      .then(responses => {
+        cards.append(...responses.map(followerResp => createCard(followerResp.data)));
+      });
   })
   .catch(rejection => {
     console.log(rejection);
